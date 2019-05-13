@@ -1,8 +1,8 @@
 pyobiee is a custom connector for OBIEE (Oracle Business Intelligence Enterprise Edition).
 
 It has two main functions:
-1. Downloading a custom OBIEE report data (needs report's path)
-2. Executing a SQL query and then downloading the data.
+1. Downloading data from a custom OBIEE report (needs report's path)
+2. Executing a SQL query and then downloading its data.
 
 All that using SOAP protocol, Python SOAP client - zeep and OBIEE XMLViewService.
 
