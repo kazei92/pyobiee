@@ -1,3 +1,8 @@
+'''
+Created on May 13, 2019
+@author: Timur Kazyev (kazei92)
+'''
+
 import re
 from zeep import Client
 from requests import Session
