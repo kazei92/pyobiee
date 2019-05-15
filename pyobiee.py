@@ -95,8 +95,11 @@ def responseSQL(wsdl, username, password, query, executionoptions):
     
     
     # Retrieveing data schema and column headings
-    schema = xmlservice.executeSQLQuery(sql=query, outputFormat="SAWRowsetSchema",
-                                       executionOptions=executionoptions, sessionID=sessionid)
+    for i in range(30):
+        schema = xmlservice.executeSQLQuery(sql=query, outputFormat="SAWRowsetSchema",
+                                            executionOptions=executionoptions, sessionID=sessionid)
+        if schema.rowset != None:
+            break
     
     columnHeading = re.findall(r'columnHeading="(.*?)"', schema.rowset)
     dataset_dict = {}
