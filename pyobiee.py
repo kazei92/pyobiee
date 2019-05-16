@@ -4,10 +4,10 @@ Created on May 13, 2019
 '''
 
 import re
+import xml.etree.ElementTree as ET
 from zeep import Client
 from requests import Session
 from zeep.transports import Transport
-import xml.etree.ElementTree as ET
 from zeep.wsse.username import UsernameToken
 import pandas as pd
 
