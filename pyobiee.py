@@ -103,7 +103,7 @@ def responseSQL(wsdl, username, password, query, executionoptions):
     xmlservice = client.bind('XmlViewService')
     
     
-    # Retrieveing data schema and column headings
+    # Makes 30 retries to get SAWRowsetSchema (dataset column headers)
     max_retries = 30
     while max_retries > 0:
         schema = xmlservice.executeSQLQuery(sql=query, outputFormat="SAWRowsetSchema",
