@@ -18,16 +18,25 @@ def responseXML(wsdl, username, password, reportpath, executionoptions):
     
     # Initializing SOAP client, start a session, and make a connection to XmlViewService binding
     session = Session()
-    session.verify = False
+    session.verify = True
     transport = Transport(session=session)
     client = Client(wsdl=wsdl, wsse=UsernameToken(username, password), transport=transport)
     sessionid = client.service.logon(username, password)
     xmlservice = client.bind('XmlViewService')
     
     
-    # Retrieveing data schema and column headings
-    schema = xmlservice.executeXMLQuery(report=reportpath, outputFormat="SAWRowsetSchema",
-                                       executionOptions=executionoptions, sessionID=sessionid)
+    # Makes 30 retries to get SAWRowsetSchema (dataset column headers)
+    max_retries = 30
+    while max_retries > 0:
+        schema = xmlservice.executeXMLQuery(report=reportpath, outputFormat="SAWRowsetSchema",
+                                            executionOptions=executionoptions, sessionID=sessionid)
+        if schema.rowset != None:
+            max_retries -= 1
+            break
+    
+    if schema.rowset == None:
+        client.service.logoff(sessionID=sessionid)
+        raise SAWRowsetSchemaError
     
     columnHeading = re.findall(r'columnHeading="(.*?)"', schema.rowset)
     dataset_dict = {}
@@ -95,11 +104,17 @@ def responseSQL(wsdl, username, password, query, executionoptions):
     
     
     # Retrieveing data schema and column headings
-    for i in range(30):
+    max_retries = 30
+    while max_retries > 0:
         schema = xmlservice.executeSQLQuery(sql=query, outputFormat="SAWRowsetSchema",
                                             executionOptions=executionoptions, sessionID=sessionid)
         if schema.rowset != None:
+            max_retries -= 1
             break
+    
+    if schema.rowset == None:
+        client.service.logoff(sessionID=sessionid)
+        raise SAWRowsetSchemaError
     
     columnHeading = re.findall(r'columnHeading="(.*?)"', schema.rowset)
     dataset_dict = {}
@@ -112,6 +127,11 @@ def responseSQL(wsdl, username, password, query, executionoptions):
     queryresult = xmlservice.executeSQLQuery(sql=query, outputFormat="SAWRowsetData",
                                             executionOptions=executionoptions, sessionID=sessionid)
     queryid = queryresult.queryID
+    
+    if queryresult.rowset == None:
+        client.service.logoff(sessionID=sessionid)
+        raise SAWRowsetDataError
+    
     ETobject = ET.fromstring(queryresult.rowset)
     namespacerows = ETobject.findall('{urn:schemas-microsoft-com:xml-analysis:rowset}Row')
     
@@ -143,3 +163,17 @@ def responseSQL(wsdl, username, password, query, executionoptions):
         queryfetch = queryfetch.finished
         
     return pd.DataFrame(dataset_dict)
+
+# Package Exceptions
+
+
+class PyObieeError(Exception):
+    """PyObieeError class"""
+
+class SAWRowsetSchemaError(PyObieeError):
+    """SAWRowsetSchemaError is None, check your query and try again"""
+
+class SAWRowsetDataError(PyObieeError):
+    """SAWRowsetDataError is None, check your query and try again"""
+
+
