@@ -30,8 +30,10 @@ def responseXML(wsdl, username, password, reportpath, executionoptions):
     while max_retries > 0:
         schema = xmlservice.executeXMLQuery(report=reportpath, outputFormat="SAWRowsetSchema",
                                             executionOptions=executionoptions, sessionID=sessionid)
-        if schema.rowset != None:
+        if schema.rowset == None:
             max_retries -= 1
+            continue
+        else:
             break
     
     if schema.rowset == None:
@@ -108,10 +110,12 @@ def responseSQL(wsdl, username, password, query, executionoptions):
     while max_retries > 0:
         schema = xmlservice.executeSQLQuery(sql=query, outputFormat="SAWRowsetSchema",
                                             executionOptions=executionoptions, sessionID=sessionid)
-        if schema.rowset != None:
+        if schema.rowset == None:
             max_retries -= 1
+            continue
+        else:
             break
-    
+            
     if schema.rowset == None:
         client.service.logoff(sessionID=sessionid)
         raise SAWRowsetSchemaError
