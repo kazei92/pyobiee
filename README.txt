@@ -1,5 +1,7 @@
 pyobiee is a custom connector for OBIEE (Oracle Business Intelligence Enterprise Edition).
 
+Documentation (in progress) is here - https://github.com/kazei92/pyobiee/wiki
+
 It has two main functions (methods):
 1. downloadReport - Downloading data from a custom OBIEE report (needs report's path)
 2. executeSQL - Executing a SQL query and then downloading its data.
