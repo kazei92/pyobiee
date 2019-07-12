@@ -1,4 +1,5 @@
-pip setup in preparation
+Installation
+pip install pyobiee-kazei92
 
 
 pyobiee is a custom connector for OBIEE (Oracle Business Intelligence Enterprise Edition).
