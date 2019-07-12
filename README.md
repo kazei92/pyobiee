@@ -1,6 +1,10 @@
 # Installation
 pip install pyobiee-kazei92
 
+Dependencies: zeep, pandas, requests
+If there is an issue with installing zeep, please do it manually:
+pip install zeep
+
 
 # General Information
 pyobiee is a custom connector for OBIEE (Oracle Business Intelligence Enterprise Edition).
