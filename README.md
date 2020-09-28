@@ -1,5 +1,5 @@
 # Installation
-```pip install pyobiee-kazei92```
+```pip install pyobiee```
 
 Dependencies: zeep, pandas, requests<br>
 If there is an issue with installing zeep, please do it manually:<br>
