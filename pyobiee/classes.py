@@ -1,4 +1,4 @@
-from zeep import Client
+from zeep import Client, Settings
 from zeep.transports import Transport
 from requests import Session
 
@@ -8,7 +8,8 @@ class SAWSessionService():
     def __init__(self, wsdl):
         session = Session()
         transport = Transport(session=session)
-        self.client = Client(wsdl=wsdl, transport=transport)
+        settings = Settings(xml_huge_tree=True)
+        self.client = Client(wsdl=wsdl, transport=transport, settings=settings)
         self.service = self.client.service
 
     def logon(self, username, password):
