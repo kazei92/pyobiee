@@ -10,9 +10,9 @@ logging.getLogger('zeep').setLevel(logging.ERROR)
 def get_schema(xml_view_service, query_type, path_or_sql):
     for i in range(10):
         if query_type == "report":
-            query_results = xml_view_service.execute_xml_query(report_ref=path_or_sql, output_format="SAWRowsetSchema")
+            query_results = xml_view_service.execute_xml_query(report_ref=path_or_sql, output_format="SAWRowsetSchemaAndData")
         elif query_type == "sql":
-            query_results = xml_view_service.execute_sql_query(sql=path_or_sql, output_format="SAWRowsetSchema")
+            query_results = xml_view_service.execute_sql_query(sql=path_or_sql, output_format="SAWRowsetSchemaAndData")
         else:
             raise QueryError('unknown query type')
 
