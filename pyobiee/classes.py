@@ -50,9 +50,9 @@ class XMLViewService():
                                                      sessionID=self.session_id)
         return query_results
     
-    def execute_xml_query(self, report_ref, output_format):
+    def execute_xml_query(self, report_ref, output_format, report_params=None):
         query_results = self.service.executeXMLQuery(report=report_ref, outputFormat=output_format, executionOptions=self.execution_options, 
-                                                     sessionID=self.session_id)
+                                                     sessionID=self.session_id, reportParams=report_params)
         return query_results
 
     def fetch_next(self, query_id):
