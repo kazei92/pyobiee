@@ -5,9 +5,13 @@ from requests import Session
 
 class SAWSessionService():
 
-    def __init__(self, wsdl):
+    def __init__(self, wsdl, ignore_ssl = False):
         session = Session()
         transport = Transport(session=session)
+        
+        if (ignore_ssl):
+            transport.session.verify = False
+        
         settings = Settings(xml_huge_tree=True)
         self.client = Client(wsdl=wsdl, transport=transport, settings=settings)
         self.service = self.client.service

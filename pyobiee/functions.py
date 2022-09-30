@@ -71,8 +71,8 @@ def parse_rows(rowset, headers):
     return data
 
 
-def get_data(query_type, path_or_sql, wsdl, username, password, report_params=None):
-    session_service = SAWSessionService(wsdl)
+def get_data(query_type, path_or_sql, wsdl, username, password, report_params = None, ignore_ssl = False):
+    session_service = SAWSessionService(wsdl, ignore_ssl)
     session_id = session_service.logon(username, password)
     xml_view_service = XMLViewService(session_service, session_id)
     try:
