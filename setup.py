@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="pyobiee", # Replace with your own username
-    version="0.1.7",
+    version="0.1.8",
     author="Timur Kazyev",
     author_email="kazyev@me.com",
     description="Python wrapper for OBIEE",

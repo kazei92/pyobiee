@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: pyobiee
-Version: 0.1.7
+Version: 0.1.8
 Summary: Python wrapper for OBIEE
 Home-page: https://github.com/kazei92/pyobiee
 Author: Timur Kazyev
