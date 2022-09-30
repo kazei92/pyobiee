@@ -10,9 +10,9 @@ logging.getLogger('zeep').setLevel(logging.ERROR)
 def get_schema(xml_view_service, query_type, path_or_sql):
     for i in range(10):
         if query_type == "report":
-            query_results = xml_view_service.execute_xml_query(report_ref=path_or_sql, output_format="SAWRowsetSchema")
+            query_results = xml_view_service.execute_xml_query(report_ref=path_or_sql, output_format="SAWRowsetSchemaAndData")
         elif query_type == "sql":
-            query_results = xml_view_service.execute_sql_query(sql=path_or_sql, output_format="SAWRowsetSchema")
+            query_results = xml_view_service.execute_sql_query(sql=path_or_sql, output_format="SAWRowsetSchemaAndData")
         else:
             raise QueryError('unknown query type')
 
@@ -34,9 +34,9 @@ def parse_schema(rowset):
     return re.findall(r'columnHeading="(.*?)"', rowset)
 
 
-def get_rows(xml_view_service, query_type, path_or_sql, headers):
+def get_rows(xml_view_service, query_type, path_or_sql, headers, report_params):
     if query_type == "report":
-        query_results = xml_view_service.execute_xml_query(report_ref=path_or_sql, output_format="SAWRowsetData")
+        query_results = xml_view_service.execute_xml_query(report_ref=path_or_sql, output_format="SAWRowsetData", report_params=report_params)
     elif query_type == "sql":
         query_results = xml_view_service.execute_sql_query(sql=path_or_sql, output_format="SAWRowsetData")
     else:
@@ -71,13 +71,13 @@ def parse_rows(rowset, headers):
     return data
 
 
-def get_data(query_type, path_or_sql, wsdl, username, password):
+def get_data(query_type, path_or_sql, wsdl, username, password, report_params=None):
     session_service = SAWSessionService(wsdl)
     session_id = session_service.logon(username, password)
     xml_view_service = XMLViewService(session_service, session_id)
     try:
         headers = get_schema(xml_view_service, query_type, path_or_sql)
-        data = get_rows(xml_view_service, query_type, path_or_sql, headers)
+        data = get_rows(xml_view_service, query_type, path_or_sql, headers, report_params)
     finally:
         session_service.logoff(session_id)
 
