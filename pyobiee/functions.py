@@ -2,23 +2,24 @@ import time
 import re
 import pandas as pd
 import xml.etree.ElementTree as ET
-import logging
 from .classes import *
-logging.getLogger('zeep').setLevel(logging.ERROR)
+import warnings
+warnings.filterwarnings('ignore')
 
 
 def get_schema(xml_view_service, query_type, path_or_sql):
-    for i in range(10):
+    print("Trying to retrieve schema")
+    for i in range(30):
         if query_type == "report":
-            query_results = xml_view_service.execute_xml_query(report_ref=path_or_sql, output_format="SAWRowsetSchemaAndData")
+            query_results = xml_view_service.execute_xml_query(report_ref=path_or_sql, output_format="SAWRowsetSchema")
         elif query_type == "sql":
-            query_results = xml_view_service.execute_sql_query(sql=path_or_sql, output_format="SAWRowsetSchemaAndData")
+            query_results = xml_view_service.execute_sql_query(sql=path_or_sql, output_format="SAWRowsetSchema")
         else:
-            raise QueryError('unknown query type')
+            raise QueryError('Unknown query type')
 
         if query_results.rowset == None:
-            logging.getLogger("__name__").info(f'query_result is None for the attemt #{i}')
-            time.sleep(10)
+            print(f"Schema is empty, attempt {i+1}")
+            time.sleep(6)
             continue
         else:
             break
@@ -27,7 +28,7 @@ def get_schema(xml_view_service, query_type, path_or_sql):
         headers = parse_schema(query_results.rowset)
         return headers
     else:
-        raise QueryError('query returned no data, execution time is too long or there is a problem with your report')
+        raise QueryError('Schema is empty: execution timeout or there is a problem with your report')
 
 
 def parse_schema(rowset):
@@ -35,20 +36,29 @@ def parse_schema(rowset):
 
 
 def get_rows(xml_view_service, query_type, path_or_sql, headers, report_params):
-    if query_type == "report":
-        query_results = xml_view_service.execute_xml_query(report_ref=path_or_sql, output_format="SAWRowsetData", report_params=report_params)
-    elif query_type == "sql":
-        query_results = xml_view_service.execute_sql_query(sql=path_or_sql, output_format="SAWRowsetData")
-    else:
-        raise QueryError('unknown query type')
+    print("Trying to retrieve data")
+    for i in range(30):
 
-    if query_results.rowset == None:
-        raise QueryError('rowset is empty, check your query')
+        if query_type == "report":
+            query_results = xml_view_service.execute_xml_query(report_ref=path_or_sql, output_format="SAWRowsetData", report_params=report_params)
+        elif query_type == "sql":
+            query_results = xml_view_service.execute_sql_query(sql=path_or_sql, output_format="SAWRowsetData")
+        else:
+            raise QueryError('Unknown query type')
+
+        if query_results.rowset == None:
+            print(f"Data rows are empty, attempt {i}")
+            time.sleep(6)
+            continue
+        else:
+            break
+    
 
     data = parse_rows(query_results.rowset, headers)
     while (not query_results.finished):
         query_results = xml_view_service.fetch_next(query_id=query_results.queryID)
         batch = parse_rows(query_results.rowset, headers)
+        print(f"Data batch size: { len(batch) } rows")
         data = data + batch
     
     return data

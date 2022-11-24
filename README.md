@@ -13,7 +13,7 @@ Tested on OBIEE 12C and python 3.8.5
 # How to use
 ```
 import pyobiee
-dataframe = pyobiee.get_data(query_type, path_or_sql, wsdl, username, password)
+dataframe = pyobiee.get_data(query_type, path_or_sql, wsdl, username, password, ignore_ssl=False)
 ```
 
 Arguments:
@@ -24,6 +24,7 @@ Arguments:
 3. wsdl:string, wsdl url of the web service, example: 'http://host:port/analytics-ws/saw.dll/wsdl/v7'
 4. username: string, example 'IvanIvanovich'
 5. password: string, example '28QSAfsqs'
+6. ignore_ssl: bool, False by default
 
 # Documentation
 https://github.com/kazei92/pyobiee/wiki/

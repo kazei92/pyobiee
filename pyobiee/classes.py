@@ -47,7 +47,7 @@ class XMLViewService():
     def __init__(self, session_service, session_id):
         self.service = session_service.client.bind('XmlViewService')
         self.session_id = session_id
-        self.execution_options = {"async" : True, "maxRowsPerPage" : 10000, "refresh" : True, "presentationInfo" : True}
+        self.execution_options = {"async" : True, "maxRowsPerPage" : 5000, "refresh" : False, "presentationInfo" : True}
     
     def execute_sql_query(self, sql, output_format):
         query_results = self.service.executeSQLQuery(sql=sql, outputFormat=output_format, executionOptions=self.execution_options, 
